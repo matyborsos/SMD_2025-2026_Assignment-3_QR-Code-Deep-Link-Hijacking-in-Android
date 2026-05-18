@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">MaliciousCompanion</string>
+
+    <string name="status_idle">Idle — waiting for a colliding deep link.</string>
+    <string name="status_token_stolen">Token intercepted via scheme collision.</string>
+    <string name="status_intent_forged">Explicit intent forged at target.</string>
+    <string name="status_unknown_uri">Got URI but unknown host.</string>
+    <string name="status_inject_failed">Intent injection failed: %1$s</string>
+
+    <string name="inject_btn">Force-launch target\'s InternalActivity</string>
+</resources>

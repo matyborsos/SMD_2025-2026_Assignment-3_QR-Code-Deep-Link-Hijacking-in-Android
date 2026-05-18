@@ -1,0 +1,16 @@
+# macOS
+.DS_Store
+
+# Android Studio / Gradle
+**/build/
+**/.gradle/
+**/.idea/
+**/captures/
+**/.cxx/
+**/local.properties
+
+# Python
+**/__pycache__/
+*.pyc
+payload-gen/.venv/
+payload-gen/out/

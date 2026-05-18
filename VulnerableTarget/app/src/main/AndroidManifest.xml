@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.VulnerableTarget">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- VULN 1: custom-scheme deep link, BROWSABLE, no android:autoVerify.
+             Any app on the device may register the same <scheme,host> pair and
+             intercept the OAuth callback that carries the access token. -->
+        <activity
+            android:name=".DeepLinkActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="smdpoc"
+                    android:host="oauth" />
+            </intent-filter>
+        </activity>
+
+        <!-- VULN 2: exported "internal" activity with no permission guard.
+             Reachable from any app via an explicit Intent (ComponentName),
+             bypassing the local-auth gate in MainActivity. -->
+        <activity
+            android:name=".InternalActivity"
+            android:exported="true" />
+
+    </application>
+
+</manifest>

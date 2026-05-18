@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">VulnerableTarget</string>
+
+    <string name="status_locked">Locked. Enter PIN to continue.</string>
+    <string name="status_unlocked">Unlocked.</string>
+    <string name="status_wrong_pin">Wrong PIN.</string>
+
+    <string name="pin_label">Local PIN</string>
+    <string name="pin_hint">PIN (try 1234)</string>
+    <string name="unlock_btn">Unlock</string>
+    <string name="oauth_btn">Sign in with OAuth (simulated)</string>
+
+    <string name="oauth_callback_title">OAuth callback received</string>
+
+    <string name="internal_title">Internal — sensitive settings</string>
+    <string name="internal_secret">Account balance: $9,999\nApi key: sk_live_FAKE_BUT_SENSITIVE</string>
+</resources>
