@@ -1,3 +1,9 @@
+# SMD_2025-2026_Assignment-3_QR-Code-Deep-Link-Hijacking-in-Android
+Students:
+- Borsos Matheas-Roland (SAS1)
+- Comarlau Vlad-Constantin (SAS1)
+
+
 # Offensive PoC — runbook
 
 Demonstrates that a malicious Android app registering the same custom URI
