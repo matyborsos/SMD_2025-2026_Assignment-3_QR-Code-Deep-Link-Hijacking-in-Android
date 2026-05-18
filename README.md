@@ -4,7 +4,7 @@ Students:
 - Comarlau Vlad-Constantin (SAS1)
 
 
-# Offensive PoC — runbook
+# Offensive PoC
 
 Demonstrates that a malicious Android app registering the same custom URI
 scheme as a target app can intercept its OAuth callback token and forge
