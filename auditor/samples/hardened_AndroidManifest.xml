@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  HARDENED version of the same smdpoc app, with the Phase 4 mitigations
+  applied. The auditor should report no HIGH/CRITICAL findings here.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.smd.poc">
+
+    <!-- Custom permission used to guard internal components -->
+    <permission
+        android:name="com.smd.poc.permission.INTERNAL"
+        android:protectionLevel="signature" />
+
+    <application
+        android:label="SMD PoC"
+        android:allowBackup="false"
+        android:usesCleartextTraffic="false">
+
+        <!-- Launcher entry point (expected to be exported) -->
+        <activity android:name=".MainActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- FIX: OAuth callback is now a VERIFIED https App Link
+             (autoVerify=true), no custom scheme, no BROWSABLE-only path. -->
+        <activity android:name=".OAuthCallbackActivity" android:exported="true">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="smdpoc.example.com"
+                      android:pathPrefix="/oauth/callback" />
+            </intent-filter>
+        </activity>
+
+        <!-- FIX: web deep link is now a verified App Link -->
+        <activity android:name=".WebLinkActivity" android:exported="true">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="smdpoc.example.com"
+                      android:pathPrefix="/open" />
+            </intent-filter>
+        </activity>
+
+        <!-- FIX: internal activity is no longer exported -->
+        <activity android:name=".InternalAdminActivity" android:exported="false" />
+
+        <!-- FIX: receiver declares exported explicitly and is guarded -->
+        <receiver
+            android:name=".LegacyReceiver"
+            android:exported="false"
+            android:permission="com.smd.poc.permission.INTERNAL">
+            <intent-filter>
+                <action android:name="com.smd.poc.ACTION_REFRESH" />
+            </intent-filter>
+        </receiver>
+
+        <!-- FIX: provider is private -->
+        <provider
+            android:name=".TokenProvider"
+            android:authorities="com.smd.poc.tokens"
+            android:exported="false" />
+
+    </application>
+</manifest>

@@ -1,0 +1,7 @@
+# The auditor itself uses only the Python standard library (Python 3.8+).
+# Device modes additionally need the Android SDK tools on PATH:
+#   - adb           (platform-tools)
+#   - apkanalyzer   (cmdline-tools/latest/bin)
+#
+# The only Python dependency is for running the test suite:
+pytest>=7.0

@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+
+# Auditor outputs / pulled artifacts
+*.apk
+report.json
+reports/
+*.report.txt

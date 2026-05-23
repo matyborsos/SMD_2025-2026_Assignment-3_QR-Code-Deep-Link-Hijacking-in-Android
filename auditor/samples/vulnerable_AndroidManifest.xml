@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Deliberately VULNERABLE manifest for the SMD smdpoc target app.
+  Every planted weakness from the project plan is present here so the
+  auditor can be demonstrated. DO NOT ship a real app like this.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.smd.poc">
+
+    <application
+        android:label="SMD PoC"
+        android:debuggable="true"
+        android:allowBackup="true"
+        android:usesCleartextTraffic="true">
+
+        <!-- Normal launcher entry point (should NOT be flagged) -->
+        <activity android:name=".MainActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- VULN: custom-scheme deep link + BROWSABLE on an OAuth callback
+             (sensitive). Triggers DL001 (custom scheme), BR001 (sensitive),
+             and EX001 (exported, no permission). -->
+        <activity android:name=".OAuthCallbackActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="smdpoc" android:host="oauth" />
+            </intent-filter>
+        </activity>
+
+        <!-- VULN: http(s) deep link with NO autoVerify -> unverified App Link.
+             Triggers DL002. -->
+        <activity android:name=".WebLinkActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="smdpoc.example.com" />
+            </intent-filter>
+        </activity>
+
+        <!-- VULN: exported "internal" activity with no permission guard.
+             Triggers EX001. -->
+        <activity android:name=".InternalAdminActivity" android:exported="true" />
+
+        <!-- VULN: component with an intent-filter but no explicit
+             android:exported (implicitly exported). Triggers EX002. -->
+        <receiver android:name=".LegacyReceiver">
+            <intent-filter>
+                <action android:name="com.smd.poc.ACTION_REFRESH" />
+            </intent-filter>
+        </receiver>
+
+        <!-- VULN: exported content provider with no permission. Triggers
+             EX001 at CRITICAL severity. -->
+        <provider
+            android:name=".TokenProvider"
+            android:authorities="com.smd.poc.tokens"
+            android:exported="true" />
+
+    </application>
+</manifest>

@@ -1,7 +1,7 @@
 # Planted Vulnerabilities — Offensive PoC
 
 This document inventories the two deliberate vulnerabilities planted in the
-`VulnerableTarget` app for the offensive proof-of-concept. Each entry lists
+`target-app` for the offensive proof-of-concept. Each entry lists
 where the vulnerability lives, the exact attack that exploits it, the observed
 effect, and the fix the defensive auditor will recommend.
 
@@ -18,7 +18,7 @@ The two attacks share a delivery surface — a QR code carrying a
 ## V1 — OAuth token interception via scheme collision
 
 ### Where
-`VulnerableTarget/app/src/main/AndroidManifest.xml` — `DeepLinkActivity` is
+`target-app/app/src/main/AndroidManifest.xml` — `DeepLinkActivity` is
 exported with an intent-filter on a custom scheme, BROWSABLE, and **no
 `android:autoVerify`**:
 
@@ -39,7 +39,7 @@ exported with an intent-filter on a custom scheme, BROWSABLE, and **no
 a logged-in session — no origin or signature check.
 
 ### How a real attack lands
-1. The attacker publishes a separate APK (`MaliciousCompanion`) that registers
+1. The attacker publishes a separate APK (`attacker-app`) that registers
    the **same** `<scheme="smdpoc", host="oauth">` filter.
 2. When any URI with that scheme is dispatched (e.g. the OAuth provider's
    redirect, or a QR scan), Android's Intent Resolver finds **two** matching
@@ -58,7 +58,7 @@ adb shell am start -W -a android.intent.action.VIEW \
   -d 'smdpoc://oauth/callback?token=REAL_USER_SESSION_42'
 ```
 
-Android shows the chooser. Picking `MaliciousCompanion` displays
+Android shows the chooser. Picking `attacker-app` displays
 `STOLEN TOKEN: REAL_USER_SESSION_42` in the attacker UI; the legitimate
 `DeepLinkActivity` never runs.
 
@@ -98,7 +98,7 @@ Any other app on the device can launch this activity directly by constructing
 an **explicit** `Intent` with its `ComponentName`. No URI scheme, no chooser,
 no user interaction.
 
-`MaliciousCompanion`'s handler does exactly that when it receives a QR-derived
+`attacker-app`'s handler does exactly that when it receives a QR-derived
 `smdpoc://internal/...` URI:
 
 ```kotlin
@@ -117,11 +117,11 @@ Three equivalent paths, all skip the PIN gate:
 # A. Direct adb — proves the activity is reachable from outside.
 adb shell am start -n ro.upb.smd.poc.target/.InternalActivity
 
-# B. QR-delivered trigger routed through MaliciousCompanion.
+# B. QR-delivered trigger routed through attacker-app.
 adb shell am start -W -a android.intent.action.VIEW \
   -d 'smdpoc://internal/launch?cmd=show_secret'
 
-# C. The "Force-launch target's InternalActivity" button in MaliciousCompanion.
+# C. The "Force-launch target's InternalActivity" button in attacker-app.
 ```
 
 In all three cases the emulator jumps straight to the "sensitive settings"
@@ -158,8 +158,8 @@ own task — i.e. the PIN gate was bypassed.
 
 | Role | Path |
 |---|---|
-| Vulnerable target | `VulnerableTarget/app/src/main/AndroidManifest.xml` |
-| V1 sink | `VulnerableTarget/app/src/main/java/ro/upb/smd/poc/target/DeepLinkActivity.kt` |
-| V2 sink | `VulnerableTarget/app/src/main/java/ro/upb/smd/poc/target/InternalActivity.kt` |
-| Malicious companion | `MaliciousCompanion/app/src/main/AndroidManifest.xml`, `…/MainActivity.kt` |
+| Vulnerable target | `target-app/app/src/main/AndroidManifest.xml` |
+| V1 sink | `target-app/app/src/main/java/ro/upb/smd/poc/target/DeepLinkActivity.kt` |
+| V2 sink | `target-app/app/src/main/java/ro/upb/smd/poc/target/InternalActivity.kt` |
+| Malicious companion | `attacker-app/app/src/main/AndroidManifest.xml`, `…/MainActivity.kt` |
 | QR payload generator | `payload-gen/payload_gen.py` |
