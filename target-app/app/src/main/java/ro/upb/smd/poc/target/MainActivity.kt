@@ -11,10 +11,26 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 
 class MainActivity : AppCompatActivity() {
 
     private val expectedPin = "1234"
+
+    private val qrLauncher = registerForActivityResult(ScanContract()) { result ->
+        val contents = result.contents
+        if (contents.isNullOrBlank()) {
+            Toast.makeText(this, R.string.scan_cancelled, Toast.LENGTH_SHORT).show()
+            return@registerForActivityResult
+        }
+        try {
+            val uri = Uri.parse(contents)
+            startActivity(Intent(Intent.ACTION_VIEW, uri))
+        } catch (_: Throwable) {
+            Toast.makeText(this, getString(R.string.scan_invalid, contents), Toast.LENGTH_LONG).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,10 +58,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         oauthBtn.setOnClickListener {
-            // Simulate the OAuth provider redirecting back to us via the custom scheme.
-            // In a real app this is what the browser would deliver after consent.
-            val callback = Uri.parse("smdpoc://oauth/callback?token=DEMO_REAL_TOKEN_$%02x".format((0..255).random()))
-            startActivity(Intent(Intent.ACTION_VIEW, callback))
+            val options = ScanOptions().apply {
+                setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+                setPrompt(getString(R.string.scan_prompt))
+                setBeepEnabled(true)
+                setOrientationLocked(false)
+            }
+            qrLauncher.launch(options)
         }
     }
 }
