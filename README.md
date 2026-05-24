@@ -33,6 +33,9 @@ pip install -r requirements.txt
 python3 payload_gen.py     # writes out/qr_oauth.png and out/qr_internal.png
 ```
 
+qr_oauth.png is the QR code that simulates a OAuth token response and is intercepted by the malicious app.
+qr_internal.png is the QR code that is recognized only by the malicious app that calls the exported view in the target app.
+
 Load QR code in the emulator camera:
 In Android Studio -> Extended Controls -> Camera -> Wall:
 - Select qr_oauth.png or qr_internal.png
