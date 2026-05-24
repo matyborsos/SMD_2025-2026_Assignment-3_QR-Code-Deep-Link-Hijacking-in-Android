@@ -56,7 +56,8 @@ adb shell am start -W -a android.intent.action.VIEW \
 
 
 > [!NOTE]  
-> **How it works:**> 
+> **How it works:**
+>  
 > QR encodes ```smdpoc://oauth/callback?token=…```
 > 
 > both apps (target and attacker) registered this URI
@@ -86,7 +87,7 @@ adb shell am start -W -a android.intent.action.VIEW \
 > 
 > QR encodes ```smdpoc://internal/launch?cmd=show_secret```
 > 
-> scan -> only the attacker matches -> attacker open silently (builds explicit intent) -> calls exported activity of target app
+> scan -> only the attacker app will recognize the deep-link -> attacker app opens silently (builds explicit intent) -> calls the exported activity of target app
 > 
 > ```Works because target app has an exported=true activity callable from any app on the device. The QR code is just a social engineering wrapper / delivery method```
 
