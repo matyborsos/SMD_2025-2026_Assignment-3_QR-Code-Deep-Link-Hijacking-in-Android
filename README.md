@@ -24,12 +24,6 @@ Install both apps on the same AVD:
 1. Open `target-app/` in Android Studio → ▶️ Run.
 2. Open `attacker-app/` in a new window → ▶️ Run.
 
-Verify:
-
-```bash
-adb shell pm list packages | grep ro.upb.smd.poc
-```
-
 Install the QR generator:
 
 ```bash
@@ -39,7 +33,16 @@ pip install -r requirements.txt
 python3 payload_gen.py     # writes out/qr_oauth.png and out/qr_internal.png
 ```
 
+Load QR code in the emulator camera:
+In Android Studio -> Extended Controls -> Camera -> Wall:
+- Select qr_oauth.png or qr_internal.png
+- Press Scan QR in the VulnerableTarget app
+- While holding shift move the camera with the mouse and wasd keys to look at the QR on the wall
+
 ## Attack 1 — OAuth token interception
+Press Scan QR in the VulnerableTarget app
+
+OR
 
 ```bash
 adb shell am start -W -a android.intent.action.VIEW \
@@ -50,6 +53,9 @@ Pick **MaliciousCompanion** in the chooser → its UI shows
 `STOLEN TOKEN: REAL_USER_SESSION_42`.
 
 ## Attack 2 — Intent injection (PIN bypass)
+Press Scan QR in the VulnerableTarget app
+
+OR
 
 ```bash
 adb shell am start -W -a android.intent.action.VIEW \
