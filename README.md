@@ -35,7 +35,7 @@ python3 payload_gen.py     # writes out/qr_oauth.png and out/qr_internal.png
 
 ```
 ** Outputs **
-qr_oauth.png = QR code simulating a OAuth token response that will get intercepted by the malicious app.
+qr_oauth.png = QR code simulating an OAuth token response that will get intercepted by the malicious app.
 qr_internal.png = QR code recognized only by the malicious app that calls the exported view in the target app.
 ```
 Load QR code in the emulator camera:
