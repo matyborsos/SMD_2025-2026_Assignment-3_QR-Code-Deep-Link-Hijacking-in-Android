@@ -62,7 +62,7 @@ adb shell am start -W -a android.intent.action.VIEW \
 > 
 > both apps (target and attacker) registered this URI
 > 
-> scan -> chooser dialog -> user picks attacker -> token in the URI is delivered to the wrong app
+> scan -> chooser dialog -> user picks attacker app -> token in the URI is delivered to the wrong app
 > 
 > ```Works because custom URI schemes have no origin verification. Any app can claim them```
 
