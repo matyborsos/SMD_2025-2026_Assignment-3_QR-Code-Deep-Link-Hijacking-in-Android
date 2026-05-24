@@ -21,8 +21,8 @@ codes carrying `smdpoc://` URIs serve as the delivery vector.
 
 Install both apps on the same AVD:
 
-1. Open `VulnerableTarget/` in Android Studio → ▶️ Run.
-2. Open `MaliciousCompanion/` in a new window → ▶️ Run.
+1. Open `target-app/` in Android Studio → ▶️ Run.
+2. Open `attacker-app/` in a new window → ▶️ Run.
 
 Verify:
 
