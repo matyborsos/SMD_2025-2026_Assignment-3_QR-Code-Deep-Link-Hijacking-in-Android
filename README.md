@@ -40,15 +40,9 @@ In Android Studio -> Extended Controls -> Camera -> Wall:
 - While holding shift move the camera with the mouse and wasd keys to look at the QR on the wall
 
 ## Attack 1 — OAuth token theft
+Steps:
 
-Press Scan QR in the VulnerableTarget app
-> [!NOTE]  
-> **How it works:**
-> 
-> QR encodes ```smdpoc://oauth/callback?token=…```
-> both apps (target and attacker) registered this URI
-> scan -> chooser dialog -> user picks attacker -> token in the URI is delivered to the wrong app
-> ```Works because custom URI schemes have no origin verification. Any app can claim them```
+1. Press Scan QR in the VulnerableTarget app
 
 OR
 
@@ -57,18 +51,25 @@ adb shell am start -W -a android.intent.action.VIEW \
   -d 'smdpoc://oauth/callback?token=REAL_USER_SESSION_42'
 ```
 
-Pick **MaliciousCompanion** in the chooser → its UI shows
+2. Pick **MaliciousCompanion** in the chooser → its UI shows
 `STOLEN TOKEN: REAL_USER_SESSION_42`.
 
-## Attack 2 — Intent injection (PIN bypass)
-> [!NOTE]  
-> **How it works:**
-> 
-> QR encodes ```smdpoc://internal/launch?cmd=show_secret```
-> scan -> only the attacker matches -> attacker open silently (builds explicit intent) -> calls exported activity of target app
-> ```Works because target app has an exported=true activity callable from any app on the device```
 
-Press Scan QR in the VulnerableTarget app
+> [!NOTE]  
+> **How it works:**> 
+> QR encodes ```smdpoc://oauth/callback?token=…```
+> 
+> both apps (target and attacker) registered this URI
+> 
+> scan -> chooser dialog -> user picks attacker -> token in the URI is delivered to the wrong app
+> 
+> ```Works because custom URI schemes have no origin verification. Any app can claim them```
+
+
+## Attack 2 — Intent injection (PIN bypass)
+Steps:
+
+1. Press Scan QR in the VulnerableTarget app
 
 OR
 
@@ -77,8 +78,18 @@ adb shell am start -W -a android.intent.action.VIEW \
   -d 'smdpoc://internal/launch?cmd=show_secret'
 ```
 
-Pick **MaliciousCompanion** → emulator jumps straight to
+2. Pick **MaliciousCompanion** → emulator jumps straight to
 **Internal — sensitive settings**, skipping the PIN screen.
+
+> [!NOTE]  
+> **How it works:**
+> 
+> QR encodes ```smdpoc://internal/launch?cmd=show_secret```
+> 
+> scan -> only the attacker matches -> attacker open silently (builds explicit intent) -> calls exported activity of target app
+> 
+> ```Works because target app has an exported=true activity callable from any app on the device```
+
 
 ## Evidence
 
