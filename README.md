@@ -88,7 +88,7 @@ adb shell am start -W -a android.intent.action.VIEW \
 > 
 > scan -> only the attacker matches -> attacker open silently (builds explicit intent) -> calls exported activity of target app
 > 
-> ```Works because target app has an exported=true activity callable from any app on the device```
+> ```Works because target app has an exported=true activity callable from any app on the device. The QR code is just a social engineering wrapper / delivery method```
 
 
 ## Evidence
